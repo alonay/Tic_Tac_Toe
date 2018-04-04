@@ -11,6 +11,22 @@ class Game
     @turns = 0
   end
 
+  def play
+    until win? do
+      if @turns.even?
+        human_move = move_human_player
+        break if human_move == 'exit'
+      else
+        break if @turns >= 8
+        move_computer_player
+      end
+    end
+
+    game_over unless human_move == 'exit'
+  end
+
+  # methods from here down are alphabetical
+
   def announce_winner
     if !win?
       puts 'Not gonna lie; it is a TIE!'
@@ -31,8 +47,30 @@ class Game
     @computer_player.set_choice(@human_player.choice)
   end
 
+  def check_groupings
+    # Groups current board to iterate and check for a win
+    # The group is a multidimensional array of depth 2 and length 3
+    # 3 nested arrays each with a length of 3
+    groups = @board.state.each_slice(3).to_a
+
+    if horizontal(groups) || vertical(groups) || diagonal(groups)
+      true
+    end
+  end
+
+  def diagonal(groups)
+    # Checks for a diagonal win using the groups created
+    # This win condition is met when one value ('X' or 'O') is present in each
+    # index along one of the two diagonals
+    return true if first_diagonal? || second_diagonal?
+  end
+
   def enough_turns_played?
     @turns >= 4
+  end
+
+  def first_diagonal?
+    @board.state[4] == @board.state[0] && @board.state[0] == @board.state[8]
   end
 
   def game_over
@@ -45,6 +83,19 @@ class Game
     input = gets.strip
     choose_letter(input)
     play
+  end
+
+  def horizontal(groups)
+    # Checks for a horizontal win using the groups created
+    # This win condition is met when one value ('X' or 'O') is present at each
+    # index within one of the nested arrays/rows
+    groups.each do |current_group|
+      if current_group[0] == current_group[1] && current_group[1] == current_group[2]
+        return true
+      end
+    end
+
+    false
   end
 
   def move_computer_player
@@ -71,27 +122,13 @@ class Game
     end
   end
 
-  def play
-    until win? do
-      if @turns.even?
-        human_move = move_human_player
-        break if human_move == 'exit'
-      else
-        break if @turns >= 8
-        move_computer_player
-      end
-    end
-
-    game_over unless human_move == 'exit'
-  end
-
   def restart?
     puts "Good game, friend! Would you like to play again? Please type 'Yes' or 'No'. Soo...?"
-    input = gets.strip.downcase
+    input = gets.strip
 
-    if input == "yes"
+    if input.downcase == "yes"
       restart_game
-    elsif input == "no"
+    elsif input.downcase == "no"
       puts "Bye... I'm gonna cry :'( "
     else
       puts "This is like a game, just type 'Yes' or 'No'. Ready? Set? Go!"
@@ -107,39 +144,18 @@ class Game
     play
   end
 
+  def second_diagonal?
+    @board.state[4] == @board.state[2] && @board.state[2] == @board.state[6]
+  end
+
   def taken?(index)
     !available?(index)
   end
 
-  def win?
-    if enough_turns_played? && winning_move_made?
-      check_groupings
-    end
-  end
-
-  def winning_move_made?
-    taken?(0) || taken?(4) || taken?(8)
-  end
-
-  def check_groupings
-    groups = @board.state.each_slice(3).to_a
-
-    if horizontal(groups) || vertical(groups) || diagonal(groups)
-      true
-    end
-  end
-
-  def horizontal(groups)
-    groups.each do |current_group|
-      if current_group[0] == current_group[1] && current_group[1] == current_group[2]
-        return true
-      end
-    end
-
-    false
-  end
-
   def vertical(groups)
+    # Checks for a vertical win using the groups created
+    # This win condition is met when one value ('X' or 'O') is present at the
+    # same index across all of the nested arrays (a column in the groups matrix)
     (0..2).each do |vertical|
       if groups[0][vertical] == groups[1][vertical] && groups[1][vertical] == groups[2][vertical]
         return true
@@ -148,11 +164,14 @@ class Game
     false
   end
 
-  def diagonal(groups)
-    if @board.state[4] == @board.state[0] && @board.state[0] == @board.state[8] || @board.state[4] == @board.state[2] && @board.state[2] == @board.state[6]
-      return true
+  def win?
+    if enough_turns_played? && winning_move_made? # A win can not happen before turn 5
+      check_groupings
     end
-
-    false
   end
+
+  def winning_move_made? # A win can not occur without at least one of these spaces filled
+    taken?(0) || taken?(4) || taken?(8)
+  end
+
 end

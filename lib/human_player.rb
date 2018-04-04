@@ -12,7 +12,7 @@ class HumanPlayer < Player
   end
 
   def play
-    puts "Please enter a number (1-9):"
+    puts "Please enter a number. Any number you see open between 1 and 9 is totally fine:"
     gets.strip
   end
 end
