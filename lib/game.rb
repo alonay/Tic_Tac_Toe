@@ -27,7 +27,7 @@ class Game
 
   def choose_letter(input)
     @human_player.set_choice(input.upcase)
-    puts "#{@human_player.choice} is your letter, does it get any better?!"
+    puts "#{@human_player.choice} is your letter, does it get any better?! If it does and you've gotta go, type 'Exit' to let me know."
     @computer_player.set_choice(@human_player.choice)
   end
 
@@ -41,7 +41,7 @@ class Game
   end
 
   def greeting
-    puts "The game is Tic Tac Toe, where you win by getting 3 in a row. Would you like to be the letter 'X' or the letter 'O'?"
+    puts "Welcome to Tic Tac Toe, where you win by getting 3 in a row. Would you like to be the letter 'X' or the letter 'O'?"
     input = gets.strip
     choose_letter(input)
     play
@@ -61,7 +61,7 @@ class Game
 
     if human_move.downcase == 'exit'
       return 'exit'
-    elsif !human_move.empty? && available?(index)
+    elsif index != -1 && available?(index)
       @board.state[index] = @human_player.choice
       @board.show
       @turns += 1
