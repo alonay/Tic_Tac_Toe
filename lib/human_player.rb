@@ -6,7 +6,7 @@ class HumanPlayer < Player
       @choice = input
       return @choice
     else
-      puts "that isn't an option"
+      puts "That isn't an option. You can do better, pick a letter."
       set_choice(gets.strip)
     end
   end
