@@ -13,7 +13,7 @@ class Game
 
   def announce_winner
     if !win?
-      puts 'Not gonna lie, it is A TIE!'
+      puts 'Not gonna lie; it is a TIE!'
     elsif @turns.odd?
       puts "You beat me! There was something in my eye. I couldn't see!"
     else
@@ -27,7 +27,7 @@ class Game
 
   def choose_letter(input)
     @human_player.set_choice(input.upcase)
-    puts "#{@human_player.choice} is your letter, does it get any better?! If it does and you've gotta go, type 'Exit' to let me know."
+    puts "#{@human_player.choice} is your letter; does it get any better?! If it does and you've gotta go, type 'Exit' to let me know."
     @computer_player.set_choice(@human_player.choice)
   end
 
@@ -66,7 +66,7 @@ class Game
       @board.show
       @turns += 1
     else
-      puts "Please pick another spot, remember that open spots are represented as numbers on the board. This is the only way to score!"
+      puts "Please pick another spot. Remember that open spots are represented as numbers on the board. This is the only way to score!"
       move_human_player
     end
   end
@@ -86,21 +86,21 @@ class Game
   end
 
   def restart?
-    puts "Good game, friend, would you like to play again? please type 'Yes' or 'No'. Soo...?"
+    puts "Good game, friend! Would you like to play again? Please type 'Yes' or 'No'. Soo...?"
     input = gets.strip.downcase
 
     if input == "yes"
       restart_game
     elsif input == "no"
-      puts "Bye i'm gonna cry :'( "
+      puts "Bye... I'm gonna cry :'( "
     else
-      puts "This is like a game, choose yes or no, ready? set? go!"
+      puts "This is like a game, just type 'Yes' or 'No'. Ready? Set? Go!"
       restart?
     end
   end
 
   def restart_game
-    puts "what letter would you like to be this time? ... did that even rhyme?"
+    puts "What letter would you like to be this time? ... Did that even rhyme?"
     choose_letter(gets.strip)
     @board = Board.new
     @turns = 0
