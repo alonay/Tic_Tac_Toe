@@ -41,7 +41,6 @@ class Game
       comp_choice = @computer_player.play(@board.state)
       index = comp_choice.to_i - 1
           @board.state[index] = @computer_player.choice
-          @board.show
           @turns += 1
         end
         input_to_board_and_repeat
