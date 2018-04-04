@@ -14,7 +14,7 @@ class Game
   def greeting
     puts "Hello, would you like to be the letter 'X' or the letter 'O'?"
     input = gets.strip
-    @human_player.set_choice(input)
+    @human_player.set_choice(input.upcase)
     puts "great! you are #{@human_player.choice}"
     @computer_player.set_choice(@human_player.choice)
     input_to_board_and_repeat
