@@ -145,7 +145,6 @@ class Game
         return true
       end
     end
-
     false
   end
 

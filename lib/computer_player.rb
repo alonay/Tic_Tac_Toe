@@ -10,10 +10,10 @@ class ComputerPlayer < Player
   end
 
   def play(current_board)
-    puts "ok it's my turn!"# returns a random choice from available_spaces
+    puts "It's my turn. Watch and learn!"# returns a random choice from available_spaces
     open_spaces = current_board.select{|spot| spot.class == Fixnum}
     selection = open_spaces.sample
-    puts "I pick #{selection}!"
+    puts "Click. #{selection} is my pick!"
     selection
   end
 end
