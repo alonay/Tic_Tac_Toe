@@ -12,7 +12,9 @@ class Game
   end
 
   def announce_winner
-    if @turns.odd?
+    if !win?
+      puts 'Not gonna lie, it is A TIE!'
+    elsif @turns.odd?
       puts "You beat me! There was something in my eye. I couldn't see!"
     else
       puts "BOOOM! I WON! THIS IS INSANE! ... I mean ... Good game!"
@@ -33,6 +35,11 @@ class Game
     @turns >= 4
   end
 
+  def game_over
+    announce_winner
+    restart?
+  end
+
   def greeting
     puts "The game is Tic Tac Toe, where you win by getting 3 in a row. Would you like to be the letter 'X' or the letter 'O'?"
     input = gets.strip
@@ -51,7 +58,6 @@ class Game
     @board.show
     human_move = @human_player.play
     index = human_move.to_i - 1
-    # break if human_move.upcase === 'EXIT'
 
     if human_move.downcase == 'exit'
       return 'exit'
@@ -71,33 +77,31 @@ class Game
         human_move = move_human_player
         break if human_move == 'exit'
       else
+        break if @turns >= 8
         move_computer_player
       end
     end
 
-    unless human_move == 'exit'
-      announce_winner
-      restart?
-    end
+    game_over unless human_move == 'exit'
   end
 
   def restart?
     puts "Good game, friend, would you like to play again? please type 'Yes' or 'No'. Soo...?"
-    input = gets.strip
+    input = gets.strip.downcase
 
-    if input.downcase == "yes"
-      puts "what letter would you like to be this time? ... did that even rhyme?"
-      letter = gets.strip
-      choose_letter(letter)
+    if input == "yes"
       restart_game
-    elsif input.downcase == "no"
+    elsif input == "no"
       puts "Bye i'm gonna cry :'( "
-    else puts "This is like a game, choose yes or no, ready? set? go!"
+    else
+      puts "This is like a game, choose yes or no, ready? set? go!"
       restart?
     end
   end
 
   def restart_game
+    puts "what letter would you like to be this time? ... did that even rhyme?"
+    choose_letter(gets.strip)
     @board = Board.new
     @turns = 0
     play
@@ -109,7 +113,7 @@ class Game
 
   def win?
     if enough_turns_played? && winning_move_made?
-      return check_groupings
+      check_groupings
     end
   end
 
@@ -120,27 +124,36 @@ class Game
   def check_groupings
     groups = @board.state.each_slice(3).to_a
 
+    if horizontal(groups) || vertical(groups) || diagonal(groups)
+      true
+    end
+  end
+
+  def horizontal(groups)
     groups.each do |current_group|
       if current_group[0] == current_group[1] && current_group[1] == current_group[2]
         return true
       end
     end
 
-    # groups = [
-    #   [0,1,2],
-    #   [3,4,5],
-    #   [6,7,8]
-    # ]
+    false
+  end
 
+  def vertical(groups)
     (0..2).each do |vertical|
       if groups[0][vertical] == groups[1][vertical] && groups[1][vertical] == groups[2][vertical]
         return true
       end
     end
 
+    false
+  end
+
+  def diagonal(groups)
     if @board.state[4] == @board.state[0] && @board.state[0] == @board.state[8] || @board.state[4] == @board.state[2] && @board.state[2] == @board.state[6]
       return true
     end
-    return false
+
+    false
   end
 end
